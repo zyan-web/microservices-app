@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  ui:
+    build:
+      context: ./ui
+    ports:
+      - "3002:3002"  # Changed port for UI
+    depends_on:
+      - api_service
+
+  api_service:
+    build:
+      context: ./api
+    ports:
+      - "5002:5002"  # Changed port for API
+    depends_on:
+      - database_service
+
+  database_service:
+    image: mysql:latest
+    container_name: app_db_container  # Changed container name
+    ports:
+      - "3307:3306"  # Changed database port to avoid conflicts
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_password
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
